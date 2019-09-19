@@ -5,16 +5,86 @@
  */
 package controlador;
 
+import dao.DaoEmpresa;
+import javax.swing.JOptionPane;
+import modelo.Empresa;
 import tela.manutencao.ManutencaoEmpresa;
+import java.util.List;
 
-/**
- *
- * @author Administrador
- */
+import java.util.Vector;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 public class ControladorEmpresa {
+      
+    public static void inserir(ManutencaoEmpresa man){
+        Empresa objeto = new Empresa();
+        objeto.setNome_fantasia(man.jtfNome_fantasia.getText());
+        objeto.setRazao_social(man.jtfRazao_social.getText());
+        
+        boolean resultado = DaoEmpresa.inserir(objeto);
+        if (resultado) {
+            JOptionPane.showMessageDialog(null, "Inserido com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!");
+        }
+}
 
-    public static void inserir(ManutencaoEmpresa aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     public static void alterar(ManutencaoEmpresa man){
+        Empresa objeto = new Empresa();
+        //definir todos os atributos
+        objeto.setCodigo(Integer.parseInt(man.jtfCodigo.getText()));
+        objeto.setNome_fantasia(man.jtfNome_fantasia.getText());
+        objeto.setRazao_social(man.jtfRazao_social.getText());
+        
+        boolean resultado = DaoEmpresa.alterar(objeto);
+        if (resultado) {
+            JOptionPane.showMessageDialog(null, "Alterado com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!");
+        }
+    }
+
+    public static void excluir(ManutencaoEmpresa man){
+        Empresa objeto = new Empresa();
+        objeto.setCodigo(Integer.parseInt(man.jtfCodigo.getText())); //só precisa definir a chave primeira
+        
+        boolean resultado = DaoEmpresa.excluir(objeto);
+        if (resultado) {
+            JOptionPane.showMessageDialog(null, "Excluído com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro!");
+        }
     }
     
+    public static void atualizarTabela(JTable tabela) {
+        DefaultTableModel modelo = new DefaultTableModel();
+        //definindo o cabeçalho da tabela
+        modelo.addColumn("Codigo");
+        modelo.addColumn("Nome");
+        modelo.addColumn("Descrição");
+        List<Empresa> resultados = DaoEmpresa.consultar();
+        for (Empresa objeto : resultados) {
+            Vector linha = new Vector();
+            
+            //definindo o conteúdo da tabela
+            linha.add(objeto.getCodigo());
+            linha.add(objeto.getNome_fantasia());
+            linha.add(objeto.getRazao_social());
+            modelo.addRow(linha); //adicionando a linha na tabela
+        }
+        tabela.setModel(modelo);
+    }
+    
+    public static void atualizaCampos(ManutencaoEmpresa man, Integer pk){ 
+        Empresa objeto = DaoEmpresa.consultar(pk);
+        //Definindo os valores do campo na tela (um para cada atributo/campo)
+        man.jtfCodigo.setText(objeto.getCodigo().toString());
+        man.jtfNome_fantasia.setText(objeto.getNome_fantasia());
+        man.jtfRazao_social.setText(objeto.getRazao_social());
+        
+        man.jtfCodigo.setEnabled(false); //desabilitando o campo código
+        man.btnAdicionar.setEnabled(false); //desabilitando o botão adicionar
+    }
+
 }
