@@ -175,6 +175,6 @@ public class ListagemEmpresa extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable tabela;
+    public javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
